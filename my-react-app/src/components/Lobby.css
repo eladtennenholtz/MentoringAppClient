@@ -1,0 +1,37 @@
+/* Lobby.css */
+
+.container {
+  text-align: center;
+  padding: 20px;
+}
+
+.title {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+}
+
+.listItem {
+  margin: 10px 0;
+}
+
+.link {
+  text-decoration: none;
+  color: #3498db;
+  font-size: 18px;
+  font-weight: bold;
+  display: block;
+  padding: 10px;
+  border: 1px solid #3498db;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.link:hover {
+  background-color: #3498db;
+  color: #fff;
+}

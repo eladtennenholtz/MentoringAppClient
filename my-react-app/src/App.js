@@ -3,11 +3,13 @@ import { socket } from "./services/socket";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Lobby from "./components/Lobby";
 import CodeBlock from "./components/CodeBlock";
+import { set } from "ace-builds/src-noconflict/ace";
 
 const App = () => {
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [role, setRole] = useState("mentor");
   const [codeBlocks, setCodeBlocks] = useState([]); // Add codeBlocks state
+  const [isMainPage, setIsMainPage] = useState(true);
 
   useEffect(() => {
     function onConnect() {
@@ -17,10 +19,6 @@ const App = () => {
     function onDisconnect() {
       setIsConnected(false);
     }
-
-    socket.on("connect", onConnect);
-    socket.on("disconnect", onDisconnect);
-
     // Fetch codeBlocks from your server or set it directly
     const fetchedCodeBlocks = [
       {
@@ -45,19 +43,34 @@ const App = () => {
       },
       // Add more code blocks as needed
     ];
+    if (!isConnected) {
+      setCodeBlocks(fetchedCodeBlocks);
+      socket.emit("send_initial_code_blocks", fetchedCodeBlocks);
+    } else {
+      socket.emit("get_all_code_blocks");
+      socket.on("all_code_blocks", (data) => {
+        console.log("all code blocks    " + data);
+        setCodeBlocks(data);
+      });
+    }
 
-    setCodeBlocks(fetchedCodeBlocks);
+    socket.on("connect", onConnect);
+    socket.on("disconnect", onDisconnect);
 
     return () => {
       socket.off("connect", onConnect);
       socket.off("disconnect", onDisconnect);
     };
-  }, []);
+  }, [isMainPage, isConnected]);
 
   socket.on("role", (data) => {
     console.log(`received role ${data.role}`);
     setRole(data.role);
   });
+  const updateIsMainPage = (newValue) => {
+    console.log("i am in the updated" + newValue);
+    setIsMainPage(newValue);
+  };
 
   // Return the JSX
   return (
@@ -68,7 +81,13 @@ const App = () => {
         {/* Pass role and codeBlocks as props to CodeBlock */}
         <Route
           path="/code-block/:codeBlockId"
-          element={<CodeBlock role={role} codeBlocks={codeBlocks} />}
+          element={
+            <CodeBlock
+              updateIsMainPage={updateIsMainPage}
+              role={role}
+              codeBlocks={codeBlocks}
+            />
+          }
         />
       </Routes>
     </Router>

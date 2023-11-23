@@ -20,6 +20,17 @@ const CodeBlock = (props) => {
   const { codeBlockId } = useParams();
   const [code, setCode] = useState("");
 
+  const { updateIsMainPage } = props;
+  useEffect(() => {
+    // Example: Call setIsMainPage(false) when CodeBlock mounts
+    console.log("update main page");
+    updateIsMainPage(false);
+
+    return () => {
+      updateIsMainPage(true);
+    };
+  }, [updateIsMainPage]);
+
   // Find the codeBlock corresponding to codeBlockId
   const selectedCodeBlock = props.codeBlocks.find(
     (block) => block.id === codeBlockId
@@ -30,12 +41,11 @@ const CodeBlock = (props) => {
     if (selectedCodeBlock) {
       setCode(selectedCodeBlock.code);
     }
-  }, [selectedCodeBlock]);
+  }, [codeBlockId, props.codeBlocks]);
 
+  // Listen for updates to the code block from the server
   socket.on("receive_message", (data) => {
-    console.log("Message received:", data.message);
-    // Handle the received message as needed
-    if (codeBlockId === data.id) {
+    if (data.id === codeBlockId) {
       setCode(data.message);
     }
   });

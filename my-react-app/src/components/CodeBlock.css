@@ -1,0 +1,21 @@
+/* CodeBlock.css */
+
+.CodeBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.CodeBlock h1 {
+  margin-bottom: 20px;
+}
+
+.CodeBlock button {
+  padding: 10px;
+  font-size: 16px;
+  margin-right: 10px;
+}
+
+.CodeBlock .smiley {
+  font-size: 3em;
+}

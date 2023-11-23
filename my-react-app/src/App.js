@@ -20,37 +20,13 @@ const App = () => {
     function onDisconnect() {
       setIsConnected(false);
     }
-    // Fetch codeBlocks from your server or set it directly
-    // const fetchedCodeBlocks = [
-    //   {
-    //     id: "Async-case",
-    //     title: "Async Case",
-    //     code: "This is the code of the async",
-    //   },
-    //   {
-    //     id: "Promise-example",
-    //     title: "Promise Example",
-    //     code: "This is the code of the promise",
-    //   },
-    //   {
-    //     id: "Event-handler",
-    //     title: "Event Handler",
-    //     code: "This is the code of the event-handler",
-    //   },
-    //   {
-    //     id: "Arrow-function",
-    //     title: "Arrow Function",
-    //     code: "This is the code of the arrow function",
-    //   },
-    //   // Add more code blocks as needed
-    // ];
+
     if (!isConnected) {
       setCodeBlocks(fetchedCodeBlocks);
       socket.emit("send_initial_code_blocks", fetchedCodeBlocks);
     } else {
       socket.emit("get_all_code_blocks");
       socket.on("all_code_blocks", (data) => {
-        console.log("all code blocks    " + data);
         setCodeBlocks(data);
       });
     }
@@ -65,11 +41,9 @@ const App = () => {
   }, [isMainPage, isConnected]);
 
   socket.on("role", (data) => {
-    console.log(`received role ${data.role}`);
     setRole(data.role);
   });
   const updateIsMainPage = (newValue) => {
-    console.log("i am in the updated" + newValue);
     setIsMainPage(newValue);
   };
 
@@ -77,9 +51,9 @@ const App = () => {
   return (
     <Router>
       <Routes>
-        {/* Pass codeBlocks as a prop to Lobby */}
+        {}
         <Route path="/" element={<Lobby codeBlocks={codeBlocks} />} />
-        {/* Pass role and codeBlocks as props to CodeBlock */}
+        {}
         <Route
           path="/code-block/:codeBlockId"
           element={

@@ -1,5 +1,3 @@
-// CodeBlock.js
-
 import React, { useState, useEffect } from "react";
 import AceEditor from "react-ace";
 import { socket } from "../services/socket";
@@ -7,7 +5,7 @@ import { useParams } from "react-router-dom";
 import "ace-builds/src-noconflict/mode-javascript";
 import "ace-builds/src-noconflict/theme-monokai";
 import "ace-builds/src-noconflict/ext-language_tools.js";
-import "./CodeBlock.css"; // Import the CSS file
+import "./CodeBlock.css";
 
 const ace = require("ace-builds/src-noconflict/ace");
 ace.config.set(

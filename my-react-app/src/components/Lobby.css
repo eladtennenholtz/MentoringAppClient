@@ -25,6 +25,8 @@
   font-size: 18px;
   font-weight: bold;
   display: block;
+  width: 200px; /* Set a fixed width */
+  margin: 0 auto; /* Center the link within the container */
   padding: 10px;
   border: 1px solid #3498db;
   border-radius: 5px;

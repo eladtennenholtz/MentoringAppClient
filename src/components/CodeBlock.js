@@ -51,9 +51,26 @@ const CodeBlock = (props) => {
     socket.emit("send_message", { message: newCode, id: codeBlockId });
     setCode(newCode);
   };
+  const cleanAndNormalizeCode = (code) => {
+    return code
+      .trim()
+      .replace(/\s+/g, " ")
+      .replace(/\r\n/g, "\n")
+      .replace(/\r/g, "\n")
+      .replace(/\t/g, " ")
+      .replace(/  +/g, "\t")
+      .replace(/[“”]/g, '"')
+      .replace(/[‘’]/g, "'")
+      .replace(/^\uFEFF/, "");
+  };
 
   const handleResult = () => {
-    if (selectedCodeBlock.code === code) {
+    // Check if the code is correct and show the smiley
+
+    if (
+      cleanAndNormalizeCode(selectedCodeBlock.solution) ===
+      cleanAndNormalizeCode(code)
+    ) {
       setShowSmiley(true);
     } else {
       setShowSmiley(false);

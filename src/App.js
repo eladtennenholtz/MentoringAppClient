@@ -4,7 +4,6 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Lobby from "./components/Lobby";
 import CodeBlock from "./components/CodeBlock";
 import fetchedCodeBlocks from "./resources/resource";
-import { set } from "ace-builds/src-noconflict/ace";
 
 const App = () => {
   const [isConnected, setIsConnected] = useState(socket.connected);
@@ -14,6 +13,8 @@ const App = () => {
 
   useEffect(() => {
     function onConnect() {
+      setCodeBlocks(fetchedCodeBlocks);
+      socket.emit("send_initial_code_blocks", fetchedCodeBlocks);
       setIsConnected(true);
     }
 
@@ -21,10 +22,7 @@ const App = () => {
       setIsConnected(false);
     }
 
-    if (!isConnected) {
-      setCodeBlocks(fetchedCodeBlocks);
-      socket.emit("send_initial_code_blocks", fetchedCodeBlocks);
-    } else {
+    if (isConnected) {
       socket.emit("get_all_code_blocks");
       socket.on("all_code_blocks", (data) => {
         setCodeBlocks(data);
@@ -33,12 +31,11 @@ const App = () => {
 
     socket.on("connect", onConnect);
     socket.on("disconnect", onDisconnect);
-
     return () => {
       socket.off("connect", onConnect);
       socket.off("disconnect", onDisconnect);
     };
-  }, [isMainPage, isConnected]);
+  }, [isMainPage]);
 
   socket.on("role", (data) => {
     setRole(data.role);
@@ -47,7 +44,6 @@ const App = () => {
     setIsMainPage(newValue);
   };
 
-  // Return the JSX
   return (
     <Router>
       <Routes>

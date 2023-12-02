@@ -29,7 +29,7 @@ const CodeBlock = (props) => {
     return () => {
       updateIsMainPage(true);
     };
-  }, [updateIsMainPage]);
+  }, []);
 
   const selectedCodeBlock = props.codeBlocks.find(
     (block) => block.id === codeBlockId

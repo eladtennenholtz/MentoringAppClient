@@ -10,7 +10,6 @@ const App = () => {
   const [role, setRole] = useState("mentor");
   const [codeBlocks, setCodeBlocks] = useState([]); // Add codeBlocks state
   const [isMainPage, setIsMainPage] = useState(true);
-
   useEffect(() => {
     function onConnect() {
       setCodeBlocks(fetchedCodeBlocks);
@@ -22,24 +21,26 @@ const App = () => {
       setIsConnected(false);
     }
 
+    socket.on("connect", onConnect);
+    socket.on("disconnect", onDisconnect);
+    socket.on("role", (data) => {
+      setRole(data.role);
+    });
+    return () => {
+      socket.off("connect", onConnect);
+      socket.off("disconnect", onDisconnect);
+    };
+  }, []);
+
+  useEffect(() => {
     if (isConnected) {
       socket.emit("get_all_code_blocks");
       socket.on("all_code_blocks", (data) => {
         setCodeBlocks(data);
       });
     }
-
-    socket.on("connect", onConnect);
-    socket.on("disconnect", onDisconnect);
-    return () => {
-      socket.off("connect", onConnect);
-      socket.off("disconnect", onDisconnect);
-    };
   }, [isMainPage]);
 
-  socket.on("role", (data) => {
-    setRole(data.role);
-  });
   const updateIsMainPage = (newValue) => {
     setIsMainPage(newValue);
   };

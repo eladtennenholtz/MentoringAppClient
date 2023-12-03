@@ -26,6 +26,11 @@ const CodeBlock = (props) => {
   useEffect(() => {
     updateIsMainPage(false);
 
+    socket.on("receive_message", (data) => {
+      if (data.id === codeBlockId) {
+        setCode(data.message);
+      }
+    });
     return () => {
       updateIsMainPage(true);
     };
@@ -40,12 +45,6 @@ const CodeBlock = (props) => {
       setCode(selectedCodeBlock.code);
     }
   }, [codeBlockId, props.codeBlocks]);
-
-  socket.on("receive_message", (data) => {
-    if (data.id === codeBlockId) {
-      setCode(data.message);
-    }
-  });
 
   const handleCodeChange = (newCode) => {
     socket.emit("send_message", { message: newCode, id: codeBlockId });

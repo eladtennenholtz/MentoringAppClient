@@ -8,8 +8,8 @@ import fetchedCodeBlocks from "./resources/resource";
 const App = () => {
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [role, setRole] = useState("mentor");
-  const [codeBlocks, setCodeBlocks] = useState([]); // Add codeBlocks state
-  const [isMainPage, setIsMainPage] = useState(true);
+  const [codeBlocks, setCodeBlocks] = useState([]);
+
   useEffect(() => {
     function onConnect() {
       setCodeBlocks(fetchedCodeBlocks);
@@ -26,24 +26,20 @@ const App = () => {
     socket.on("role", (data) => {
       setRole(data.role);
     });
+
     return () => {
+      // Cleanup: Remove the event listener when the component unmounts
       socket.off("connect", onConnect);
       socket.off("disconnect", onDisconnect);
     };
   }, []);
 
-  useEffect(() => {
-    if (isConnected) {
-      socket.emit("get_all_code_blocks");
-      socket.on("all_code_blocks", (data) => {
-        setCodeBlocks(data);
-      });
-    }
-  }, [isMainPage]);
-
-  const updateIsMainPage = (newValue) => {
-    setIsMainPage(newValue);
-  };
+  if (isConnected) {
+    socket.emit("get_all_code_blocks");
+    socket.on("all_code_blocks", (data) => {
+      setCodeBlocks(data);
+    });
+  }
 
   return (
     <Router>
@@ -53,13 +49,7 @@ const App = () => {
         {}
         <Route
           path="/code-block/:codeBlockId"
-          element={
-            <CodeBlock
-              updateIsMainPage={updateIsMainPage}
-              role={role}
-              codeBlocks={codeBlocks}
-            />
-          }
+          element={<CodeBlock role={role} codeBlocks={codeBlocks} />}
         />
       </Routes>
     </Router>

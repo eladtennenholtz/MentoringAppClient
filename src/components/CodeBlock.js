@@ -22,29 +22,25 @@ const CodeBlock = (props) => {
   const [code, setCode] = useState("");
   const [showSmiley, setShowSmiley] = useState(false);
 
-  const { updateIsMainPage } = props;
-  useEffect(() => {
-    updateIsMainPage(false);
-
-    socket.on("receive_message", (data) => {
-      if (data.id === codeBlockId) {
-        setCode(data.message);
-      }
-    });
-    return () => {
-      updateIsMainPage(true);
-    };
-  }, []);
-
   const selectedCodeBlock = props.codeBlocks.find(
     (block) => block.id === codeBlockId
   );
-
   useEffect(() => {
-    if (selectedCodeBlock) {
-      setCode(selectedCodeBlock.code);
-    }
-  }, [codeBlockId, props.codeBlocks]);
+    const handleMessage = (data) => {
+      if (data.id === codeBlockId) {
+        setCode(data.message);
+      }
+    };
+
+    socket.on("receive_message", handleMessage);
+
+    setCode(selectedCodeBlock.code); //when entering the codeBlock
+
+    return () => {
+      // Cleanup: Remove the event listener when the component unmounts
+      socket.off("receive_message", handleMessage);
+    };
+  }, []);
 
   const handleCodeChange = (newCode) => {
     socket.emit("send_message", { message: newCode, id: codeBlockId });

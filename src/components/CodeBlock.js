@@ -27,7 +27,6 @@ const CodeBlock = (props) => {
   );
 
   useEffect(() => {
-    props.updateIsMainPage(false);
     const handleMessage = (data) => {
       if (data.id === codeBlockId) {
         setCode(data.message);
@@ -41,7 +40,6 @@ const CodeBlock = (props) => {
     return () => {
       // Cleanup: Remove the event listener when the component unmounts
       socket.off("receive_message", handleMessage);
-      props.updateIsMainPage(true);
     };
   }, []);
 

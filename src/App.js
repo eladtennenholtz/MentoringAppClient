@@ -9,7 +9,6 @@ const App = () => {
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [role, setRole] = useState("mentor");
   const [codeBlocks, setCodeBlocks] = useState([]);
-  const [isMainPage, setIsMainPage] = useState(true);
 
   useEffect(() => {
     function onConnect() {
@@ -35,18 +34,12 @@ const App = () => {
     };
   }, []);
 
-  useEffect(() => {
-    if (isConnected) {
-      socket.emit("get_all_code_blocks");
-      socket.on("all_code_blocks", (data) => {
-        setCodeBlocks(data);
-      });
-    }
-  }, [isMainPage]);
-
-  const updateIsMainPage = (newValue) => {
-    setIsMainPage(newValue);
-  };
+  if (isConnected) {
+    socket.emit("get_all_code_blocks");
+    socket.on("all_code_blocks", (data) => {
+      setCodeBlocks(data);
+    });
+  }
 
   return (
     <Router>
@@ -56,13 +49,7 @@ const App = () => {
         {}
         <Route
           path="/code-block/:codeBlockId"
-          element={
-            <CodeBlock
-              updateIsMainPage={updateIsMainPage}
-              role={role}
-              codeBlocks={codeBlocks}
-            />
-          }
+          element={<CodeBlock role={role} codeBlocks={codeBlocks} />}
         />
       </Routes>
     </Router>

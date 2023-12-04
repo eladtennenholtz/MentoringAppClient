@@ -37,7 +37,6 @@ const App = () => {
 
   useEffect(() => {
     if (isConnected) {
-      console.log("here");
       socket.emit("get_all_code_blocks");
       socket.on("all_code_blocks", (data) => {
         setCodeBlocks(data);

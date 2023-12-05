@@ -6,19 +6,15 @@ import CodeBlock from "./components/CodeBlock";
 import fetchedCodeBlocks from "./resources/resource";
 
 const App = () => {
-  const [isConnected, setIsConnected] = useState(socket.connected);
   const [role, setRole] = useState("mentor");
-  const [codeBlocks, setCodeBlocks] = useState([]);
 
   useEffect(() => {
     function onConnect() {
-      setCodeBlocks(fetchedCodeBlocks);
       socket.emit("send_initial_code_blocks", fetchedCodeBlocks);
-      setIsConnected(true);
     }
 
     function onDisconnect() {
-      setIsConnected(false);
+      console.log("DiscoNNEcting..");
     }
 
     socket.on("connect", onConnect);
@@ -34,22 +30,20 @@ const App = () => {
     };
   }, []);
 
-  if (isConnected) {
-    socket.emit("get_all_code_blocks");
-    socket.on("all_code_blocks", (data) => {
-      setCodeBlocks(data);
-    });
-  }
-
   return (
     <Router>
       <Routes>
         {}
-        <Route path="/" element={<Lobby codeBlocks={codeBlocks} />} />
+        <Route
+          path="/"
+          element={<Lobby fetchedCodeBlocks={fetchedCodeBlocks} />}
+        />
         {}
         <Route
           path="/code-block/:codeBlockId"
-          element={<CodeBlock role={role} codeBlocks={codeBlocks} />}
+          element={
+            <CodeBlock role={role} fetchedCodeBlocks={fetchedCodeBlocks} />
+          }
         />
       </Routes>
     </Router>

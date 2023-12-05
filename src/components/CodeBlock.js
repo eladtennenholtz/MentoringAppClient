@@ -22,7 +22,7 @@ const CodeBlock = (props) => {
   const [code, setCode] = useState("");
   const [showSmiley, setShowSmiley] = useState(false);
 
-  const selectedCodeBlock = props.codeBlocks.find(
+  const selectedCodeBlock = props.fetchedCodeBlocks.find(
     (block) => block.id === codeBlockId
   );
 
@@ -32,10 +32,13 @@ const CodeBlock = (props) => {
         setCode(data.message);
       }
     };
-
+    socket.emit("send_data_for_code_block", { id: codeBlockId });
+    socket.on("receive_data_from_code_block", (data) => {
+      setCode(data.code);
+    });
     socket.on("receive_message", handleMessage);
 
-    setCode(selectedCodeBlock.code); //when entering the codeBlock
+    //setCode(selectedCodeBlock.code); //when entering the codeBlock
 
     return () => {
       // Cleanup: Remove the event listener when the component unmounts

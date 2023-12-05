@@ -7,7 +7,7 @@ const Lobby = (props) => {
     <div className="container">
       <h2 className="title">Choose Code Block</h2>
       <ul className="list">
-        {props.codeBlocks.map((block) => (
+        {props.fetchedCodeBlocks.map((block) => (
           <li key={block.id} className="listItem">
             <Link to={`/code-block/${block.id} `} className="link">
               {block.title}
